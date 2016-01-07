@@ -1,0 +1,7 @@
+$ python --version
+sh.exe": python: command not found
+
+$ PATH=$PATH:/c/Python27/
+
+$ python --version
+Python 2.7.6
