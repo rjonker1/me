@@ -43,5 +43,5 @@ class Profile(Base):
 		'active': self.active
 		}
 
-engine = create_engine('sqlite:///../../database/myweb.db')
+engine = create_engine('sqlite:///../database/myweb.db')
 Base.metadata.create_all(engine)

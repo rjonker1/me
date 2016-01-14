@@ -8,3 +8,6 @@ Python 2.7.6
 
 
 powershell PS C:\WINDOWS\system32> Set-ExecutionPolicy Unrestricted
+
+
+http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
