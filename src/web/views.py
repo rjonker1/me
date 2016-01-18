@@ -11,3 +11,15 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	return LoginForm().Get()
+
+@app.route('/logout')
+def logout():
+	return LoginForm().Logout()
+
+@app.route('/authorize/<provider>')
+def oauth_authorize(provider):
+	return LoginForm().Authorize(provider)
+
+@app.route('/callback/<provider>')
+def oauth_callback(provider):
+	return LoginForm().CallBack(provider)

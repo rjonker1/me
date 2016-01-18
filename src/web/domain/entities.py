@@ -1,19 +1,23 @@
-import os
-import sys
-import datetime
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from sqlalchemy import create_engine
+from flask.ext.login import UserMixin, LoginManager
 
-Base = declarative_base()
+from web import app
+from web import database
 
-class User(Base):
+lm = LoginManager(app)
+
+class User(UserMixin, database.Model):
 	__tablename__ = 'users'
-	id = Column(Integer, primary_key=True)
-	social_id = Column(String(64), nullable=False, unique=True)
-	username = Column(String(100), nullable=False)
-	email = Column(String(100), nullable=False)
+	id = database.Column(database.Integer, primary_key=True)
+	social_id = database.Column(database.String(64), nullable=False, unique=True)
+	nickname = database.Column(database.String(64), nullable=False, index=True, unique=True)
+	email = database.Column(database.String(120), nullable=False, index=True, unique=True)
+
+	def __repr__(self):
+		return '<User %r>' % (self.nickname)
+
+	@lm.user_loader
+	def load_user(id):
+		return User.query.get(int(id))
 
 	@property
 	def serialize(self):
@@ -25,23 +29,12 @@ class User(Base):
 		'email': self.email
 		}
 
-class Profile(Base):
-	"""Profile Table"""
-	__tablename__ = "profiles"
-	id = Column(Integer, primary_key=True)
-	url = Column(String(1000))
-	createdDate = Column(DateTime, default=datetime.datetime.utcnow)
-	active = Column(Boolean, default=True)
+class Post(database.Model):
+	__tablename__ = 'posts'
+	id = database.Column(database.Integer, primary_key=True)
+	body = database.Column(database.String(140))
+	timestamp = database.Column(database.DateTime)
+	user_id = database.Column(database.Integer, database.ForeignKey('users.id'))
 
-	@property
-	def  serialize(self):
-		"""Profile in serialized format"""
-		return{
-		'id': self.id,
-		'url': self.url,
-		'createdDate' : self.createdDate,
-		'active': self.active
-		}
-
-engine = create_engine('sqlite:///../database/myweb.db')
-Base.metadata.create_all(engine)
+	def __repr__(self):
+		return '<Post %r>' % (self.body)
