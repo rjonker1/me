@@ -18,3 +18,12 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedirectory, SQL_DATABAS
 SQLALCHEMY_MIGRATE_REPO= os.path.join(basedirectory, 'db_repository')
 
 OAUTH_CREDENTIALS = {'twitter': { 'id': 'prqSw94LQV4dUGL7EG8aXRNOP', 'secret': 'MzJ996mElLVMDa6oHGyswF9YqGkmjzfQ3BtSn6AOMFkpUoLtDs' }}
+
+# mail server settings
+MAIL_SERVER = 'localhost'
+MAIL_PORT = 25
+MAIL_USERNAME = None
+MAIL_PASSWORD = None
+
+# administrator list
+ADMINS = ['rdjnkr@gmail.com']

@@ -11,3 +11,6 @@ powershell PS C:\WINDOWS\system32> Set-ExecutionPolicy Unrestricted
 
 
 http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
+
+--mail
+python -m smtpd -n -c DebuggingServer localhost:25

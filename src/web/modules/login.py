@@ -1,23 +1,37 @@
-from flask import Flask, render_template, flash, redirect, url_for
+from flask import Flask, render_template, flash, redirect, url_for, g
 from flask.ext.wtf import Form
 from flask.ext.login import LoginManager, login_user, logout_user, current_user
 from wtforms import StringField, BooleanField
 from wtforms.validators import DataRequired
+from datetime import datetime
 
 from web import app
 from web import database
 from web.oauth import OAuthSignIn
+from web.domain.entities import User
+
+from web.forms import LoginForm
 #from oauth import OAuthSignIn
 
 
-class LoginForm(Form):
-	"""Login Form"""
-	openid = StringField('openid', validators=[DataRequired()])
-	remember_me = BooleanField('remember_me', default=False)
+class Login(Form):
+
+	def CurrentUser(self):		
+		#g.user = current_user
+		#until login is sorted
+		user = User.query.get(int(1))
+		if current_user is None:
+			login_user(user, True) 
+		g.user = user
+		if g.user.is_authenticated:
+			g.user.last_seen = datetime.utcnow()
+			database.session.add(g.user)
+			database.session.commit()
 	
 	def Get(self):
-		if self.validate_on_submit():
-			flash('Login requested for OpenID="%s", remember_me=%s' % (self.openid.data, str(self.remember_me.data)))
+		form = LoginForm()
+		if form.validate_on_submit():
+			flash('Login requested for Social Id="%s", remember_me=%s' % (self.socialid.data, str(self.remember_me.data)))
 			return redirect('/')
 
 		return render_template('login.htm', title='Sign In', form=self, providers=app.config['OPENID_PROVIDERS'])
