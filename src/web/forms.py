@@ -16,15 +16,15 @@ class EditForm(Form):
     	Form.__init__(self, *args, **kwargs)
     	self.original_nickname = original_nickname
 
-	def validate(self):
-		if not Form.validate(self):
-			return False
-		if self.nickname.data == self.original_nickname:
-			return True
+	# def validate(self):
+	# 	if not Form.validate(self):
+	# 		return False 
+	# 	if self.nickname.data == self.original_nickname:
+	# 		return True
 
-		#Get Data from USER VM
-		# user = User.query.filter_by(nickname=self.nickname.data).first()
-		# if user != None:
-		# 	self.nickname.errors.append('This nickname is already in use. Choose another!')
-		# 	return False
-		# return True
+#Get Data from USER VM
+# user = User.query.filter_by(nickname=self.nickname.data).first()
+# if user != None:
+# 	self.nickname.errors.append('This nickname is already in use. Choose another!')
+# 	return False
+# return True
