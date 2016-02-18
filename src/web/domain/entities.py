@@ -13,8 +13,7 @@ followers = database.Table(
 	)
 
 
-class User(UserMixin, database.Model):
-	__tablename__ = 'user'
+class User(database.Model):
 	id = database.Column(database.Integer, primary_key=True)
 	social_id = database.Column(database.String(64), nullable=True, unique=True)
 	nickname = database.Column(database.String(64), nullable=False, index=True, unique=True)
@@ -61,7 +60,7 @@ class User(UserMixin, database.Model):
 
 	def is_following(self, user):
 		return self.followed.filter(
-			followers.c.followed_id == user_id).count() > 0
+			followers.c.followed_id == user.id).count() > 0
 
 	def followed_posts(self):
 		return Post.query.join(
@@ -100,8 +99,7 @@ class User(UserMixin, database.Model):
 		return False
 	
 
-class Post(database.Model):
-	__tablename__ = 'posts'
+class Post(database.Model):	
 	id = database.Column(database.Integer, primary_key=True)
 	body = database.Column(database.String(140))
 	timestamp = database.Column(database.DateTime)
