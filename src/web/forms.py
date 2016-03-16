@@ -16,6 +16,21 @@ class EditForm(Form):
     	Form.__init__(self, *args, **kwargs)
     	self.original_nickname = original_nickname
 
+    def validate(self):
+        if not Form.validate(self):
+            return False
+        if self.nickname.data == self.original_nickname:
+            return True
+        user = User.query.filter_by(nickname=self.nickname.data).first()
+        if user is not None:
+            self.nickname.errors.append('Nickname is already in use. Please choose another')
+            return False
+        return True
+
+class  PostForm(Form):
+    post = StringField('post', validators=[DataRequired()])
+        
+
 	# def validate(self):
 	# 	if not Form.validate(self):
 	# 		return False 

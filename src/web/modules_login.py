@@ -5,11 +5,8 @@ from wtforms import StringField, BooleanField
 from wtforms.validators import DataRequired
 from datetime import datetime
 
-from web import app
-from web import database
+from web import app, database, domain_entities
 from web.oauth import OAuthSignIn
-from web.domain.entities import User
-
 from web.forms import LoginForm
 #from oauth import OAuthSignIn
 
@@ -19,10 +16,11 @@ class Login(Form):
 	def CurrentUser(self):		
 		#g.user = current_user
 		#until login is sorted
-		user = User.query.get(int(1))
-		if current_user is None:
-			login_user(user, True) 
-		g.user = user
+		user = domain_entities.User.query.get(int(1))		
+		current_user = user
+		# if current_user is None:
+		# 	login_user(user, True) 
+		g.user = current_user
 		if g.user.is_authenticated:
 			g.user.last_seen = datetime.utcnow()
 			database.session.add(g.user)
@@ -54,9 +52,9 @@ class Login(Form):
 		if social_id is None:
 			flash('Authentication Failed')
 			return redirect('/')
-		user = User.query.filter_by(social_id=social_id).first()
+		user = domain_entities.User.query.filter_by(social_id=social_id).first()
 		if not user:
-			user = User(social_id=social_id, nickname=username, email=email)
+			user = domain_entities.User(social_id=social_id, nickname=username, email=email)
 			database.session.add(user)
 			database.session.commit()
 		login_user(user, True)

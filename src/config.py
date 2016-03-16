@@ -27,3 +27,6 @@ MAIL_PASSWORD = None
 
 # administrator list
 ADMINS = ['rdjnkr@gmail.com']
+
+# pagination
+POSTS_PER_PAGE = 2

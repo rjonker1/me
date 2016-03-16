@@ -4,24 +4,19 @@ from wtforms import StringField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length
 from datetime import datetime
 
-from web import app
-from web import database
-from web.domain.entities import User, Post
-
+from web import app, database, domain_entities
 from web.forms import EditForm
+from config import POSTS_PER_PAGE
 
 
 class Profile(object):
 
 	def Get(self, nickname):
-		user = User.query.filter_by(nickname=nickname).first()
+		user = domain_entities.User.query.filter_by(nickname=nickname).first()
 		if user is None:
 			flash('User %s not found' % nickname)
-			return redirect('/')
-		posts = [
-		{'author': user, 'body': 'Post #1'},
-		{'author': user, 'body': 'Post #2'}
-		]
+			return redirect(url_for('index'))
+		posts =user.posts.paginate(page, POSTS_PER_PAGE, False)
 		return render_template('user.htm', user=user, posts=posts)
 
 	def Edit(self):

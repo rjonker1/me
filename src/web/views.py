@@ -1,20 +1,15 @@
 from flask import render_template
 from flask.ext.login import login_required
+from web import app, loginManager, database, modules_index, modules_login, modules_profile, vm_userviewmodel
 
-from web import app, loginManager
-from web import database
-from web.modules.index import Index
-from web.modules.login import Login
-from web.modules.profile import Profile
-from web.view_models.userviewmodel import UserVm
 
 @loginManager.user_loader
 def load_user(id):
-	return UserVm.Get(id)
+	return vm_userviewmodel.UserVm.Get(id)
 
 @app.before_request
 def before_request():
-	Login().CurrentUser()
+	modules_login.Login().CurrentUser()
 
 @app.errorhandler(404)
 def not_found_error(error):
@@ -25,34 +20,36 @@ def internal_error(error):
 	database.session.rollback()
 	return render_template('500.html'), 500
 
-@app.route('/')
-@app.route('/rudijonker')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+@app.route('/index/<int:page>', methods=['GET', 'POST'])
 #@login_required
-def index():
-	return Index().Get()
+def index(page=1):
+	return modules_index.Index().Get(page)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	return Login().Get()
+	return modules_login.Login().Get()
 
 @app.route('/logout')
 def logout():
-	return Login().Logout()
+	return modules_login.Login().Logout()
 
 @app.route('/authorize/<provider>')
 def oauth_authorize(provider):
-	return Login().Authorize(provider)
+	return modules_login.Login().Authorize(provider)
 
 @app.route('/callback/<provider>')
 def oauth_callback(provider):
-	return Login().CallBack(provider)
+	return modules_login.Login().CallBack(provider)
 
 @app.route('/user/<nickname>', endpoint="user")
+@app.route('/user/<nickname>/<int:page>')
 #@login_required
-def user(nickname):
-	return Profile().Get(nickname)
+def user(nickname, page=1):
+	return modules_profile.Profile().Get(nickname)
 
 @app.route('/user/edit', methods=['GET', 'POST'], endpoint="user-edit")
 #@login_required
 def useredit():
-	return Profile().Edit()
+	return modules_profile.Profile().Edit()

@@ -37,6 +37,4 @@ if not app.debug:
 	app.logger.info('blog startup')
 
 
-from web import views
-from web import oauth
-from web.domain import entities
+from web import views, oauth, domain_entities
